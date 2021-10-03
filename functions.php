@@ -31,3 +31,15 @@ function add_child_theme_textdomain() {
 	load_child_theme_textdomain( 'understrap-child', get_stylesheet_directory() . '/languages' );
 }
 add_action( 'after_setup_theme', 'add_child_theme_textdomain' );
+
+// --------------------
+require_once get_stylesheet_directory() . '/components/class-autoloader.php';
+$autoloader = new Autoloader();
+$autoloader->add_namespace( 'components', get_stylesheet_directory() . '/components/' );
+$autoloader->register();
+
+$app = new \components\Application();
+if ( defined( 'NO_DEMO_DATA' ) && NO_DEMO_DATA ) {
+	$app->remove_component( 'Demo_Data' );
+}
+$app->run();
