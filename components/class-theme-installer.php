@@ -91,7 +91,14 @@ class Theme_Installer implements Component {
 			return false;
 		}
 
-		$group_id = $this->create_field_group( self::POST_TYPE_GROUP_NAME );
+		$group_id = $this->create_field_group(
+			self::POST_TYPE_GROUP_NAME,
+			array(
+				'param'    => 'post_type',
+				'operator' => '==',
+				'value'    => Custom_Types::CLOTHES_POST_TYPE,
+			)
+		);
 		if ( ! $group_id ) {
 			return false;
 		}
@@ -139,13 +146,20 @@ class Theme_Installer implements Component {
 	 * Create ACF fields group and fields for taxonomy
 	 * @return bool
 	 */
-	public function register_taxonomy_acf_fields() :bool {
+	public function register_taxonomy_acf_fields() : bool {
 
 		if ( ! Dependency_Checker::check_acf_installed() ) {
 			return false;
 		}
 
-		$group_id = $this->create_field_group( self::TAXONOMY_GROUP_NAME );
+		$group_id = $this->create_field_group(
+			self::TAXONOMY_GROUP_NAME,
+			array(
+				'param'    => 'taxonomy',
+				'operator' => '==',
+				'value'    => Custom_Types::CLOTH_TAXONOMY_NAME,
+			)
+		);
 		if ( ! $group_id ) {
 			return false;
 		}
@@ -190,10 +204,11 @@ class Theme_Installer implements Component {
 
 	/**
 	 * Create ACF field group with a given name
-	 * @param $name
+	 * @param string $name
+	 * @param array $location
 	 * @return int
 	 */
-	private function create_field_group( $name ) : int {
+	private function create_field_group( string $name, array $location ) : int {
 
 		$field_group = get_page_by_title( $name, OBJECT, 'acf-field-group' );
 		// --------------------------
@@ -205,13 +220,7 @@ class Theme_Installer implements Component {
 				'title'    => $name,
 				'key'      => uniqid( 'group_' ),  // post slug in DB
 				'location' => array(
-					array(
-						array(
-							'param'    => 'post_type',
-							'operator' => '==',
-							'value'    => Custom_Types::CLOTHES_POST_TYPE,
-						),
-					),
+					array( $location ),
 				),
 			);
 			$field_group_res  = acf_update_field_group( $field_group_args );

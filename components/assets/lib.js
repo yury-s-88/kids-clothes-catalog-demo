@@ -23,8 +23,8 @@ function doc_on( event_type, target_selector, callback ) {
 /**
  * Wrapper for XMLHttpRequest
  * @param {{}} data - object containing pairs key - value
- * @param {{requestCallback}} callback - function to be invoked after request successfully done
- * @param {Element}container - element to attach spinner. body element if not set
+ * @param {requestCallback} callback - function to be invoked after request successfully done
+ * @param {Element} container - element to attach spinner. body element if not set
  */
 function send_ajax(data, callback, container) {
 
@@ -37,21 +37,26 @@ function send_ajax(data, callback, container) {
 	let formData = new FormData();
 	for (let property in data) {
 		if ( data.hasOwnProperty( property ) ) {
-			formData.append( property, data[property] );
+			// if ( data[property] instanceof FileList ) {
+				formData.append( property, data[property] );
+			// } else {
+			// 	formData.append( property, data[property], data[property].name );
+			// }
 		}
 	}
 	let xhr = new XMLHttpRequest();
 	xhr.open( 'POST', ajaxurl );
 	xhr.responseType = "json";
-	xhr.onload       = function() {
+
+	xhr.onload = function () {
 		document.body.classList.remove( 'ajax_processing' );
 		container.classList.remove( 'processing' );
 		if ( xhr.status !== 200 ) {
 			alert( 'Server error' );
 		} else {
 			let response = xhr.response;
-			if (response.success !== true) {
-				if (response.data && response.data.message) {
+			if ( ! response || response.success !== true) {
+				if ( response.data && response.data.message) {
 					alert( response.data.message )
 				} else {
 					alert( 'Unexpected error' );
@@ -61,7 +66,8 @@ function send_ajax(data, callback, container) {
 			}
 		}
 	};
-	xhr.onerror      = function() {
+
+	xhr.onerror = function () {
 		document.body.classList.add( 'ajax_processing' );
 		container.classList.add( 'processing' );
 		alert( 'Unexpected error' );
@@ -88,8 +94,20 @@ function serialize_form(form) {
 	}
 	let res = {};
 	form_controls.forEach(
-		function (element ) {
-			res[element.name] = element.value;
+		function ( element ) {
+			if ( element.nodeName === 'SELECT' && element.multiple === true ) {
+				res[element.name] = Array.prototype.slice
+					.call( element.querySelectorAll( 'option:checked' ), 0 )
+					.map(
+						function ( v ) {
+							return v.value;
+						}
+					);
+			} else if ( element.type === 'file' ) {
+				res[element.name] = element.files[0];
+			} else {
+				res[element.name] = element.value;
+			}
 		}
 	);
 	return res;

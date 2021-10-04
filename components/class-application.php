@@ -5,10 +5,10 @@ namespace components;
  * Class Application
  * @package components
  *
- * @property-read Custom_Types $Custom_Types
- * @property-read Demo_Data $Demo_Data
- * @property-read Dependency_Checker $Dependency_Checker
- * @property-read Theme_Installer $Theme_Installer
+ * @property-read Custom_Types $custom_types
+ * @property-read Demo_Data $demo_data
+ * @property-read Dependency_Checker $dependency_checker
+ * @property-read Theme_Installer $theme_installer
  */
 class Application {
 
@@ -28,7 +28,7 @@ class Application {
 			$class_name         = '\components\\' . $component_class;
 			$component_instance = new $class_name();
 
-			$this->components_instances[ $component_class ] = $component_instance;
+			$this->components_instances[ strtolower( $component_class ) ] = $component_instance;
 		}
 		$this->register_assets();
 	}
@@ -45,16 +45,16 @@ class Application {
 	 * Global assets for admin area
 	 */
 	public function register_admin_assets() : void {
-		wp_enqueue_script( 'app-lib', get_template_directory_uri() . '/components/assets/lib.js', array(), self::VERSION, true );
-		wp_enqueue_style( 'app-general', get_template_directory_uri() . '/components/assets/general.css', array(), self::VERSION );
+		wp_enqueue_script( 'app-lib', get_stylesheet_directory_uri() . '/components/assets/lib.js', array(), self::VERSION, true );
+		wp_enqueue_style( 'app-general', get_stylesheet_directory_uri() . '/components/assets/general.css', array(), self::VERSION );
 	}
 
 	/**
 	 * Global assets for site
 	 */
 	public function register_site_assets() : void {
-		wp_enqueue_script( 'app-lib', get_template_directory_uri() . '/components/assets/lib.js', array(), self::VERSION, true );
-		wp_enqueue_style( 'app-general', get_template_directory_uri() . '/components/assets/general.css', array(), self::VERSION );
+		wp_enqueue_script( 'app-lib', get_stylesheet_directory_uri() . '/components/assets/lib.js', array(), self::VERSION, true );
+		wp_enqueue_style( 'app-general', get_stylesheet_directory_uri() . '/components/assets/general.css', array(), self::VERSION );
 	}
 
 	/**
@@ -86,8 +86,9 @@ class Application {
 	 * @return mixed|null
 	 */
 	public function __get( $name ) {
-		if ( isset( $this->components_instances[ $name ] ) ) {
-			return $this->components_instances[ $name ];
+		$name_l = strtolower( $name );
+		if ( isset( $this->components_instances[ $name_l ] ) ) {
+			return $this->components_instances[ $name_l ];
 		}
 		return null;
 	}

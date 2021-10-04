@@ -1,0 +1,64 @@
+/* global */
+#content {
+	padding-bottom: 40px;
+}
+.pagination {
+	margin-top: 15px;
+	justify-content: center;
+}
+#wrapper-footer {
+	background-color: #53f;
+	text-align: center;
+}
+#wrapper-footer .site-info a {
+	color: #ffffff;
+}
+#wrapper-footer .site-info {
+	color: #e9e9e9;
+}
+
+/* single clothes */
+.meta-fields-values{
+	margin-top: 15px;
+}
+
+/* archive */
+#archive-wrapper{
+	padding-bottom: 0;
+}
+.container-clothes .entry-title{
+	font-size: 22px;
+}
+
+/* home */
+.clothes-archive-link-container{
+	margin-top: 15px;
+	margin-bottom: 25px;
+}
+.clothes-archive-link-container a {
+	font-size: 22px;
+}
+
+#cci_form hr{
+	width: 50%;
+}
+.cci_form_row {
+	display: flex;
+	margin-bottom: 5px;
+	justify-content: center;
+}
+.cci_form_row label{
+	flex-basis: 110px;
+	font-weight: 600;
+}
+
+.cci_form_row input,
+.cci_form_row select,
+.cci_form_row textarea{
+	flex-basis: 400px;
+	flex-shrink: 1;
+}
+
+#cci_form .form-invalid {
+	border: 1px solid #e23737;
+}

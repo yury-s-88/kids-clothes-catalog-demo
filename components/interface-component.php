@@ -1,6 +1,10 @@
 <?php
 namespace components;
 
+/**
+ * Interface Component
+ * @package components
+ */
 interface Component {
 
 	/**

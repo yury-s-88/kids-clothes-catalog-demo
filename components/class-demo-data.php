@@ -13,6 +13,8 @@ class Demo_Data implements Component {
 	const DEMO_POST_LOADED_OPTION_NAME  = 'demo_posts_created';
 	const DEMO_TERMS_LOADED_OPTION_NAME = 'demo_taxonomies_created';
 
+	private $always_show = false;
+
 	public function __construct() {
 	}
 
@@ -20,7 +22,7 @@ class Demo_Data implements Component {
 	 * Register handlers for hooks
 	 */
 	public function register() : void {
-		if ( ! self::check_is_demo_loaded() ) {
+		if ( ! self::check_is_demo_loaded() || $this->always_show ) {
 			add_action( 'admin_menu', array( $this, 'register_demo_data_page' ) );
 			add_action( 'current_screen', array( $this, 'schedule_demo_notice' ) );
 			add_action( 'wp_ajax_generate_demo_clothes', array( $this, 'generate_demo_clothes' ) );
@@ -33,7 +35,7 @@ class Demo_Data implements Component {
 	 * Register self script(s) and style(s)
 	 */
 	public function register_assets() : void {
-		$base_url = get_template_directory_uri() . '/components/assets/';
+		$base_url = get_stylesheet_directory_uri() . '/components/assets/';
 		wp_enqueue_style( 'demo-data', $base_url . 'demo-data.css', array(), self::VERSION );
 		wp_enqueue_script( 'demo-data', $base_url . 'demo-data.js', array( 'app-lib' ), self::VERSION, true );
 	}
@@ -73,6 +75,9 @@ class Demo_Data implements Component {
 		$step_1_done = get_option( 'demo_posts_created' );
 		$step_2_done = get_option( 'demo_taxonomies_created' );
 		switch ( true ) {
+			case $this->always_show:
+				$step = 1;
+				break;
 			case $step_1_done && $step_2_done:
 				$step = 3;
 				break;
@@ -93,7 +98,7 @@ class Demo_Data implements Component {
 					<input type="hidden" name="action" value="generate_demo_clothes">
 					<div class="demo-form-row">
 						<label class="label" for="clothes_amount">Number of clothes items to create</label>
-						<input type="number" min="0" id="clothes_amount" name="clothes_amount" value="10">
+						<input type="number" min="0" max="80" id="clothes_amount" name="clothes_amount" value="20">
 					</div>
 					<div class="demo-form-row">
 						<div class="label">Create with random thumbnails?</div>
@@ -528,5 +533,13 @@ DESCRIPTION;
 		}
 
 		return $attachment_id;
+	}
+
+	/**
+	 * Setter for $always_show
+	 * @param bool $val
+	 */
+	public function set_always_show( bool $val ) : void {
+		$this->always_show = $val;
 	}
 }
